@@ -6,61 +6,16 @@ import random
 import os
 import asyncio
 from discord.ext import commands, tasks
-import youtube_dl
-from dotenv import load_dotenv
 from itertools import cycle
 
 # config
-load_dotenv()
-intents = discord.Intents().all()
-musclient = discord.Client(intents=intents)
 
-youtube_dl.utils.bug_reports_message = lambda: ''
-
-ytdl_format_options = {
-    'format': 'bestaudio/best',
-    'restrictfilenames': True,
-    'noplaylist': True,
-    'nocheckcertificate': True,
-    'ignoreerrors': False,
-    'logtostderr': False,
-    'quiet': True,
-    'no_warnings': True,
-    'default_search': 'auto',
-    'source_address': '0.0.0.0' # bind to ipv4 since ipv6 addresses cause issues sometimes
-}
-
-ffmpeg_options = {
-    'options': '-vn'
-}
-
-ytdl = youtube_dl.YoutubeDL(ytdl_format_options)
-
-client = commands.Bot(command_prefix = '>', intents=intents)
+client = commands.Bot(command_prefix = '>')
 status = cycle(['playing with her mind',
         'sleeping',
         'passing away',
         'walking',
         'calming in the church'])
-
-# music shit
-
-class YTDLSource(discord.PCMVolumeTransformer):
-    def __init__(self, source, *, data, volume=0.5):
-        super().__init__(source, volume)
-        self.data = data
-        self.title = data.get('title')
-        self.url = ""
-
-    @classmethod
-    async def from_url(cls, url, *, loop=None, stream=False):
-        loop = loop or asyncio.get_event_loop()
-        data = await loop.run_in_executor(None, lambda: ytdl.extract_info(url, download=not stream))
-        if 'entries' in data:
-            # take first item from a playlist
-            data = data['entries'][0]
-        filename = data['title'] if stream else ytdl.prepare_filename(data)
-        return filename
 
 # commands
 
@@ -147,54 +102,6 @@ async def example(ctx):
     await ctx.send(f'hi im {ctx.author}')
 '''
 
-@client.command()
-async def join(ctx):
-    if not ctx.message.author.voice:
-        await ctx.send("{} plz join any vc".format(ctx.message.author.name))
-        return
-    else:
-        channel = ctx.message.author.voice.channel
-    await channel.connect()
-@client.command()
-async def leave(ctx):
-    voice_client = ctx.message.guild.voice_client
-    if voice_client.is_connected():
-        await voice_client.disconnect()
-    else:
-        await ctx.send("i'm not in vc =)")
-@client.command()
-async def play(ctx,url):
-    try:
-        server = ctx.message.guild
-        voice_channel = server.voice_client
-        
-        async with ctx.typing():
-            filename = await YTDLSource.from_url(url, loop=client.loop)
-            voice_channel.play(discord.FFmpegPCMAudio(executable="ffmpeg.exe", source=filename))
-        await ctx.send('**playing:** {}'.format(filename))
-    except:
-        await ctx.send("bot isn't in voice channel")
-@client.command()
-async def pause(ctx):
-    voice_client = ctx.message.guild.voice_client
-    if voice_client.is_playing():
-        await voice_client.pause()
-    else:
-        await ctx.send("bro music isn't playing :skull:")
-@client.command()
-async def resume(ctx):
-    voice_client = ctx.message.guild.voice_client
-    if voice_client.is_paused():
-        await voice_client.resume()
-    else:
-        await ctx.send("no queue bro :skull:")
-@client.command()
-async def stop(ctx):
-    voice_client = ctx.message.guild.voice_client
-    if voice_client.is_playing():
-        await voice_client.stop()
-    else:
-        await ctx.send("no music rn")
 
 # tasks
 
