@@ -19,15 +19,18 @@ status = cycle(['playing with her mind',
 # commands
 
 @client.command()
+@commands.has_permissions(kick_members=True)
 async def kick(ctx, member : discord.Member, *, reason=None):
     await member.kick(reason=reason)
     
 @client.command()
+@commands.has_permissions(ban_members=True)
 async def ban(ctx, member : discord.Member, *, reason=None):
     await member.ban(reason=reason)
     await ctx.send(f'banned {member.mention}')
     
 @client.command()
+@commands.has_permissions(ban_members=True)
 async def unban(ctx, *, member):
     banned_users = await ctx.guild.bans()
     member_name, member_discriminator = member.split('#')
