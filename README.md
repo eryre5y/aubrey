@@ -10,6 +10,7 @@ pip install -r requirements.txt
 
 # usage
 add `dstk.py` then insert in this file your discord bot token
+create `base.db` for database purposes
 ```
 token='_ur bot token_'
 ```

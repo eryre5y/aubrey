@@ -237,3 +237,5 @@ $RECYCLE.BIN/
 
 
 dstk.py
+base.db
+base.db-journal
