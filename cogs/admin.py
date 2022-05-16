@@ -1,6 +1,5 @@
 import discord
-from operator import contains
-from discord.ext import commands, tasks
+from discord.ext import commands
 import sqlite3
 from discord.ext.commands import has_permissions, CheckFailure
 
@@ -20,7 +19,7 @@ class Admin(commands.Cog):
     #Commands
     
     @commands.command()
-    @commands.has_permission(administrator=True)
+    @commands.has_permissions(administrator=True)
     async def setmoney(self, ctx, member : discord.Member, money : int):
         cursor.execute(f"UPDATE users SET balance = {money} WHERE id = {member.id} AND guild_id={member.guild.id}")
         db.commit()
