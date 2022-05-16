@@ -16,6 +16,13 @@ class Admin(commands.Cog):
         print("`admin` is online")
         
     #Commands
+    
+    @commands.command()
+    @commands.has_permission(administrator=True)
+    async def setmoney(self, ctx, member : discord.Member, money : int):
+        cursor.execute(f"UPDATE users SET balance = {money} WHERE id = {member.id} AND guild_id={member.guild.id}")
+        db.commit()
+        await ctx.send(f'changed {member} money to {money} clams')
 
     @commands.command()
     @commands.has_permissions(kick_members=True)
