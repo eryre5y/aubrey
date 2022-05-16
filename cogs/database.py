@@ -13,14 +13,19 @@ class Database(commands.Cog):
     #Events
     @commands.Cog.listener()
     async def on_ready(self):
+        cursor.execute(f"""CREATE TABLE IF NOT EXISTS users (guild_id INT,
+            id INT,
+            balance INT
+            )""")
+        db.commit()
         print("`database` is online")
         
     @commands.Cog.listener()
     async def on_member_join(self, member):
         print(f'{member} has accepted harakiri.')
-        cursor.execute(f"SELECT id FROM users where id={member.id}")
+        cursor.execute(f"SELECT * FROM users WHERE guild_id={member.guild.id} AND id={member.id}")
         if cursor.fetchone() == None:
-            cursor.execute(f"INSERT INTO users VALUES ({member.id}, 420)")
+            cursor.execute(f"INSERT INTO users VALUES ({member.guild.id}, {member.id}, 420)")
         else:
             pass
         db.commit()
@@ -31,20 +36,36 @@ class Database(commands.Cog):
         
     #Commands
     @commands.command()
-    async def reset(self, ctx):
-        cursor.execute(f"SELECT id FROM users where id={ctx.author.id}")
-        if cursor.fetchone() == None:
-            cursor.execute(f"INSERT INTO users VALUES ({ctx.author.id}, 420)")
-            db.commit()
-        else:
-            cursor.execute(f"UPDATE users SET balance = 420 WHERE id = {ctx.author.id}")
-            db.commit()
-        await ctx.send(f'reset completed')
+    async def reset(self, ctx, conf):
+        if conf == "confirm":
+            if cursor.execute(f"SELECT guild_id FROM users where guild_id={ctx.author.guild.id}").fetchone() == None and cursor.execute(f"SELECT id FROM users where id={ctx.author.id}").fetchone() == None:
+                cursor.execute(f"INSERT INTO users VALUES ({ctx.author.guild.id}, {ctx.author.id}, 420)")
+                db.commit()
+            else:
+                cursor.execute(f"UPDATE users SET balance = 420 WHERE id = {ctx.author.id} AND guild_id = {ctx.author.guild.id}")
+                db.commit()
+                await ctx.send(f'reset completed')
+        elif conf == None or conf != "confirm":
+            await ctx.send(f'please confirm with ">reset confirm"')
         
     @commands.command()
     async def balance(self, ctx):
-        balance = cursor.execute(f"SELECT balance FROM users where id={ctx.author.id}")
+        balance = cursor.execute(f"SELECT balance FROM users WHERE id={ctx.author.id} AND guild_id={ctx.author.guild.id}")
         await ctx.send(embed=discord.Embed(description=f'your balance is {balance.fetchone()[0]} clams', color=discord.Color.blue()))
         
+    @commands.command()
+    async def transfer(self, ctx, member : discord.Member, amount : int):
+        balance = cursor.execute(f"SELECT balance FROM users WHERE id={ctx.author.id} AND guild_id={ctx.author.guild.id}").fetchone()[0]
+        if balance < amount:
+            await ctx.send("insufficient balance")
+        else:
+            try:
+                cursor.execute(f"UPDATE users SET balance = balance - {amount} WHERE id = {ctx.author.id} AND guild_id = {ctx.author.guild.id}")
+                cursor.execute(f"UPDATE users SET balance = balance + {amount} WHERE id = {member.id} AND guild_id = {member.guild.id}")
+                db.commit()
+                await ctx.send(f"transfered {amount} clams to {member}")
+            except sqlite3.Error as er:
+                await ctx.send(f"transfer failed\nerror: {er}")
+    
 def setup(client):
     client.add_cog(Database(client))

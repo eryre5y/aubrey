@@ -1,5 +1,9 @@
 import discord
 from discord.ext import commands
+import sqlite3
+
+db = sqlite3.connect('base.db')
+cursor = db.cursor()
 
 class Admin(commands.Cog):
     
@@ -12,6 +16,7 @@ class Admin(commands.Cog):
         print("`admin` is online")
         
     #Commands
+
     @commands.command()
     @commands.has_permissions(kick_members=True)
     async def kick(self, ctx, member : discord.Member, *, reason=None):
