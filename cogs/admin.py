@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 import sqlite3
+from discord.ext.commands import has_permissions, CheckFailure
 
 db = sqlite3.connect('base.db')
 cursor = db.cursor()
