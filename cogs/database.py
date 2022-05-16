@@ -38,7 +38,7 @@ class Database(commands.Cog):
     @commands.command()
     async def reset(self, ctx, conf):
         if conf == "confirm":
-            if cursor.execute(f"SELECT guild_id FROM users where guild_id={ctx.author.guild.id}").fetchone() == None and cursor.execute(f"SELECT id FROM users where id={ctx.author.id}").fetchone() == None:
+            if cursor.execute(f"SELECT guild_id FROM users where guild_id={ctx.author.guild.id}").fetchone() == None or cursor.execute(f"SELECT id FROM users where id={ctx.author.id}").fetchone() == None:
                 cursor.execute(f"INSERT INTO users VALUES ({ctx.author.guild.id}, {ctx.author.id}, 420)")
                 db.commit()
             else:
