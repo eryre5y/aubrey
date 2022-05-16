@@ -1,5 +1,6 @@
 import discord
-from discord.ext import commands
+from operator import contains
+from discord.ext import commands, tasks
 import sqlite3
 from discord.ext.commands import has_permissions, CheckFailure
 
