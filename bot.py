@@ -21,6 +21,8 @@ status = cycle(['playing with her mind',
         'walking',
         'calming in the church'])
 
+client.remove_command("help")
+
 for f in os.listdir("./cogs"):
 	if f.endswith(".py"):
 		client.load_extension(f'cogs.{f[:-3]}')
@@ -54,6 +56,39 @@ async def ping(ctx):
 async def text(ctx, *, text):
     await ctx.send(embed=discord.Embed(description=text, color=discord.Color.red()))
     
+@client.command()
+async def help(ctx):
+    await ctx.send(embed=discord.Embed(
+        description=f"""
+        **>help** - help menu \n
+        `admin tools` \n
+            **>ban <person by mention> <reason>** - ban person \n
+            **>unban <member>** - unban person
+            **>kick <person by mention <reason>** - kick person\n
+            **>clear <count>** - clear last messages with specific count \n
+            **>clearall** - clear all messages in channel (To confirm type "Yes, do as I say.")\n
+            **>setmoney** - set specific money to person \n
+            **>load <module>** - load module to bot \n 
+            **>unload <module>** - unload module from bot \n 
+            **>reload <module>** - reload module in bot \n 
+        `database commands` \n
+            **>balance** - shows ur current balance \n
+            **>reset** - reset ur stats or register in database if you don't exist \n
+            **>transfer <person> <anount>** - transfer specific money to person \n
+        `games commands` \n
+            **>8ball** - predicts your answer \n
+            **>casino <bet>** - las vegas casino \n
+            **>coin <bet>** - 50/50 chance of winning \n
+            **>mine** - earn clams by spamming this command \n
+            **>roll <number> <bet>** - roll dice \n
+            **>rps <item> <bet>** - rock/paper/scissors game \n
+        `other`
+            **>ping** - api delay in ms \n 
+            **>text** - ur message from bot \n 
+            
+        questions and suggestions here **something#8653 (user id: 339654527550750720)**
+        """,
+        color=discord.Color.teal()))
 '''
 def is_it_me(ctx):
     return ctx.author.id == 339654527550750720
