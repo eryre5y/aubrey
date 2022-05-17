@@ -14,7 +14,7 @@ class Test(commands.Cog):
     #Commands
     @commands.command()
     async def tping(self, ctx):
-        await ctx.send(f'pong ({round(self.client.latency * 1000)}ms)')
+        await ctx.send(embed=discord.Embed(description=f'pong ({round(self.client.latency * 1000)}ms)', color=discord.Color.purple()))
         
 def setup(client):
     client.add_cog(Test(client))

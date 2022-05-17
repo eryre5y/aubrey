@@ -36,6 +36,7 @@ class Database(commands.Cog):
         
     #Commands
     @commands.command()
+    @commands.guild_only()
     async def reset(self, ctx, conf):
         if conf == "confirm":
             if cursor.execute(f"SELECT guild_id FROM users where guild_id={ctx.author.guild.id}").fetchone() == None or cursor.execute(f"SELECT id FROM users where id={ctx.author.id}").fetchone() == None:
@@ -44,28 +45,30 @@ class Database(commands.Cog):
             else:
                 cursor.execute(f"UPDATE users SET balance = 420 WHERE id = {ctx.author.id} AND guild_id = {ctx.author.guild.id}")
                 db.commit()
-                await ctx.send(f'reset completed')
+                await ctx.send(embed=discord.Embed(description=f'reset completed', color=discord.Color.purple()))
         elif conf == None or conf != "confirm":
-            await ctx.send(f'please confirm with ">reset confirm"')
+            await ctx.send(embed=discord.Embed(description=f'please confirm with ">reset confirm"', color=discord.Color.dark_purple()))
         
     @commands.command()
+    @commands.guild_only()
     async def balance(self, ctx):
         balance = cursor.execute(f"SELECT balance FROM users WHERE id={ctx.author.id} AND guild_id={ctx.author.guild.id}")
-        await ctx.send(embed=discord.Embed(description=f'your balance is {balance.fetchone()[0]} clams', color=discord.Color.blue()))
+        await ctx.send(embed=discord.Embed(description=f'your balance is {balance.fetchone()[0]} clams', color=discord.Color.purple()))
         
     @commands.command()
+    @commands.guild_only()
     async def transfer(self, ctx, member : discord.Member, amount : int):
         balance = cursor.execute(f"SELECT balance FROM users WHERE id={ctx.author.id} AND guild_id={ctx.author.guild.id}").fetchone()[0]
         if balance < amount:
-            await ctx.send("insufficient balance")
+            await ctx.send(embed=discord.Embed(description="insufficient balance", color=discord.Color.dark_purple()))
         else:
             try:
                 cursor.execute(f"UPDATE users SET balance = balance - {amount} WHERE id = {ctx.author.id} AND guild_id = {ctx.author.guild.id}")
                 cursor.execute(f"UPDATE users SET balance = balance + {amount} WHERE id = {member.id} AND guild_id = {member.guild.id}")
                 db.commit()
-                await ctx.send(f"transfered {amount} clams to {member}")
+                await ctx.send(embed=discord.Embed(description=f"transfered {amount} clams to {member}", color=discord.Color.purple()))
             except sqlite3.Error as er:
-                await ctx.send(f"transfer failed\nerror: {er}")
+                await ctx.send(embed=discord.Embed(description=f"transfer failed\nerror: {er}", color=discord.Color.dark_purple()))
     
 def setup(client):
     client.add_cog(Database(client))

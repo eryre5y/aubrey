@@ -18,6 +18,7 @@ class Games(commands.Cog):
         
     #Commands
     @commands.command(aliases=['8ball', 'eightball'])
+    @commands.guild_only()
     async def _8ball(self, ctx, *, question):
         responses = ['yes.',
                     'no.',
@@ -26,13 +27,14 @@ class Games(commands.Cog):
                     'who knows.',
                     'why do you ask me this?'
                     ]
-        await ctx.send(f'{random.choice(responses)}')
+        await ctx.send(embed=discord.Embed(description=f'{random.choice(responses)}', color=discord.Color.purple()))
         
     @commands.command()
+    @commands.guild_only()
     async def casino(self, ctx, bet : int):
         balance = cursor.execute(f"SELECT balance FROM users WHERE id={ctx.author.id} AND guild_id={ctx.author.guild.id}").fetchone()[0]
         if balance < bet:
-            await ctx.send("insufficient balance")
+            await ctx.send(embed=discord.Embed(description="insufficient balance", color=discord.Color.dark_purple()))
         else:
             fruits = ("lemon","watermelon","cherries","apple","grapes","strawberry")
             pos1 = fruits[random.randint(0,5)]
@@ -46,17 +48,18 @@ class Games(commands.Cog):
                 win=f":skull: loss (lost {bet} clams) :skull:"
                 cursor.execute(f"UPDATE users SET balance = balance - {bet} WHERE id = {ctx.author.id} AND guild_id={ctx.author.guild.id}")
                 db.commit()
-            await ctx.send(f':gem: :{pos1}: | :{pos2}: | :{pos3}: :gem:\n{win}')
+            await ctx.send(embed=discord.Embed(description=f':gem: :{pos1}: | :{pos2}: | :{pos3}: :gem:\n{win}', color=discord.Color.purple()))
         
     @commands.command()
+    @commands.guild_only()
     async def roll(self, ctx, choice : int, bet : int):
         dice = random.randint(1,6)
         balance = cursor.execute(f"SELECT balance FROM users WHERE id={ctx.author.id} AND guild_id={ctx.author.guild.id}").fetchone()[0]
         if balance < bet:
-            await ctx.send("insufficient balance")
+            await ctx.send(embed=discord.Embed(description="insufficient balance", color=discord.Color.dark_purple()))
         else:
             if choice == dice:
-                await ctx.send(f"you won. congrats!\n:game_die: {dice} :game_die:")
+                await ctx.send(embed=discord.Embed(description=f"you won. congrats!\n:game_die: {dice} :game_die:", color=discord.Color.purple()))
                 cursor.execute(f"UPDATE users SET balance = balance + {bet * 3} WHERE id = {ctx.author.id} AND guild_id={ctx.author.guild.id}")
                 db.commit()
             else:
@@ -65,45 +68,48 @@ class Games(commands.Cog):
                 db.commit()
                 
     @commands.command()
+    @commands.guild_only()
     async def coin(self, ctx, bet):
         bet = int(bet)
         balance = cursor.execute(f"SELECT balance FROM users WHERE id={ctx.author.id} AND guild_id={ctx.author.guild.id}").fetchone()[0]
         if balance < bet:
-            await ctx.send("insufficient balance")
+            await ctx.send(embed=discord.Embed(description="insufficient balance", color=discord.Color.dark_purple()))
         else:
             res=random.randint(1,100)
             if res <= 50:
                 cursor.execute(f"UPDATE users SET balance = balance + {bet} WHERE id = {ctx.author.id} AND guild_id={ctx.author.guild.id}")
                 db.commit()
-                await ctx.send("you won. congrats!")
+                await ctx.send(embed=discord.Embed(description="you won. congrats!", color=discord.Color.purple()))
             elif res == 50:
-                await ctx.send("tie. nothing won")
+                await ctx.send(embed=discord.Embed(description="tie. nothing won", color=discord.Color.orange()))
             else:
                 cursor.execute(f"UPDATE users SET balance = balance - {bet} WHERE id = {ctx.author.id} AND guild_id={ctx.author.guild.id}")
                 db.commit()
-                await ctx.send("aw man u lose")
+                await ctx.send(embed=discord.Embed(description="aw man u lose", color=discord.Color.dark_purple()))
                 
     @commands.command()
+    @commands.guild_only()
     async def rps(self, ctx, item : str, bet : int):
         items = ("rock", "paper", "scissor")
         current = items[random.randint(0,2)]
         if (item == "rock" and current == "scissor") or (item == "paper" and current == "rock") or (item == "scissor" and current == "paper"):
             cursor.execute(f"UPDATE users SET balance = balance + {bet} WHERE id = {ctx.author.id} AND guild_id={ctx.author.guild.id}")
             db.commit()
-            await ctx.send("you won. congrats!")
+            await ctx.send(embed=discord.Embed(description="you won. congrats!", color=discord.Color.purple()))
         elif item == current:
-            await ctx.send("tie. nothing won")
+            await ctx.send(embed=discord.Embed(description="tie. nothing won", color=discord.Color.orange()))
         else:
             cursor.execute(f"UPDATE users SET balance = balance - {bet} WHERE id = {ctx.author.id} AND guild_id={ctx.author.guild.id}")
             db.commit()
-            await ctx.send("aw man u lose")
+            await ctx.send(embed=discord.Embed(description="aw man u lose", color=discord.Color.dark_purple()))
             
     @commands.command()
+    @commands.guild_only()
     async def mine(self, ctx):
         mine = random.randint(1, 100)
         cursor.execute(f"UPDATE users SET balance = balance + {mine} WHERE id = {ctx.author.id} AND guild_id={ctx.author.guild.id}")
         db.commit()
-        await ctx.send(f"you mined {mine} clams")
+        await ctx.send(embed=discord.Embed(description=f"you mined {mine} clams", color=discord.Color.orange()))
             
         
 def setup(client):

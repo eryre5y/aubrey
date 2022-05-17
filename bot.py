@@ -30,18 +30,21 @@ for f in os.listdir("./cogs"):
 # commands
 
 @client.command()
+@commands.guild_only()
 @has_permissions(administrator=True)
 async def load(ctx, extension):
     client.load_extension(f'cogs.{extension}')
     await ctx.send(f'loaded `{extension}`')
     
 @client.command()
+@commands.guild_only()
 @has_permissions(administrator=True)
 async def unload(ctx, extension):
     client.unload_extension(f'cogs.{extension}')
     await ctx.send(f'unloaded `{extension}`')
     
 @client.command()
+@commands.guild_only()
 @has_permissions(administrator=True)
 async def reload(ctx, extension):
     client.unload_extension(f'cogs.{extension}')
@@ -50,13 +53,15 @@ async def reload(ctx, extension):
 
 @client.command()
 async def ping(ctx):
-    await ctx.send(f'pong ({round(client.latency * 1000)}ms)')
+    await ctx.send(embed=discord.Embed(description=f'pong ({round(client.latency * 1000)}ms)', color=discord.Color.purple()))
             
 @client.command()
+@commands.guild_only()
 async def text(ctx, *, text):
     await ctx.send(embed=discord.Embed(description=text, color=discord.Color.red()))
     
 @client.command()
+@commands.guild_only()
 async def help(ctx):
     await ctx.send(embed=discord.Embed(
         description=f"""
