@@ -87,6 +87,10 @@ async def help(ctx):
             **>mine** - earn clams by spamming this command \n
             **>roll <number> <bet>** - roll dice \n
             **>rps <item> <bet>** - rock/paper/scissors game \n
+        `music` \n
+            **>join** - join voice channel
+            **>leave** - leave voice channel
+            **>yt** - play youtube video
         `other`
             **>ping** - api delay in ms \n 
             **>text** - ur message from bot \n 
