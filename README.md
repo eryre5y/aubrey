@@ -9,9 +9,9 @@ pip install -r requirements.txt
 ```
 
 # usage
-add `dstk.py` then insert in this file your discord bot token
+Go to [Discord developer portal](https://discord.com/developers/applications) and create a bot then paste bot token to `dstk.py`
 ```
-token='_ur bot token_'
+token='ur bot token'
 ```
 to start bot execute
 ```
