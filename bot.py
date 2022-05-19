@@ -69,19 +69,19 @@ async def help(ctx):
         `admin tools` \n
             **>ban <person by mention> <reason>** - ban person \n
             **>unban <member>** - unban person
-            **>kick <person by mention <reason>** - kick person\n
+            **>kick <person by mention> <reason>** - kick person\n
             **>clear <count>** - clear last messages with specific count \n
             **>clearall** - clear all messages in channel (To confirm type "Yes, do as I say.")\n
-            **>setmoney** - set specific money to person \n
+            **>setmoney <person by mention> <amount>** - set specific money to person \n
             **>load <module>** - load module to bot \n 
             **>unload <module>** - unload module from bot \n 
             **>reload <module>** - reload module in bot \n 
-        `database commands` \n
+        `money commands` \n
             **>balance** - shows ur current balance \n
-            **>reset** - reset ur stats or register in database if you don't exist \n
-            **>transfer <person> <anount>** - transfer specific money to person \n
-        `games commands` \n
-            **>8ball** - predicts your answer \n
+            **>reset** - reset ur stats or register in database if you don't exist (to confirm type ">reset confirm") \n
+            **>transfer <person> <amount>** - transfer specific money to person \n
+        `games` \n
+            **>8ball <question>** - predicts your answer \n
             **>casino <bet>** - las vegas casino \n
             **>coin <bet>** - 50/50 chance of winning \n
             **>mine** - earn clams by spamming this command \n
