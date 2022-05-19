@@ -13,3 +13,7 @@ add `dstk.py` then insert in this file your discord bot token
 ```
 token='_ur bot token_'
 ```
+to start bot execute
+```
+./start.sh
+```
