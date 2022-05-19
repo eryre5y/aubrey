@@ -17,3 +17,4 @@ to start bot execute
 ```
 ./start.sh
 ```
+or if your os is Windows open `start.cmd`
