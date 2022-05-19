@@ -22,16 +22,16 @@ class Music(commands.Cog):
         
     # source: https://bit.ly/3sKWRs0
     
-    @commands.command(pass_context=True)
-    async def leave(self, ctx):
-        await ctx.voice_client.disconnect()
-        
     @commands.command(pass_cotext=True)
     async def join(self, ctx):
         global vc
         
         channel = ctx.author.voice.channel
         vc = await channel.connect()
+        
+    @commands.command(pass_context=True)
+    async def leave(self, ctx):
+        await ctx.voice_client.disconnect()
         
     @commands.command(pass_context=True)
     async def yt(self, ctx, url):
@@ -56,6 +56,30 @@ class Music(commands.Cog):
                     vc.play(discord.FFmpegPCMAudio(executable="ffmpeg\\ffmpeg.exe", source = URL, **FFMPEG_OPTIONS))
                 else: 
                     vc.play(discord.FFmpegPCMAudio(source = URL, **FFMPEG_OPTIONS))
+
+    @commands.command()
+    async def pause(self, ctx):
+        if vc.is_playing():
+            vc.pause()
+            await ctx.send(f"paused music")
+        else:
+            await ctx.send(f"nothing to pause")
+
+    @commands.command()
+    async def resume(self, ctx):
+        if vc.is_paused():
+            vc.resume()
+            await ctx.send(f"resumed")
+        else:
+            await ctx.send(f"nothing to resume")
+        
+    @commands.command()
+    async def stop(self, ctx):
+        if vc.is_playing() or vc.is_paused():
+            vc.stop()
+            await ctx.send(f"stopped music")
+        else:
+            await ctx.send(f"music isn't playing rn")
         
 
         
