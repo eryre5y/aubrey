@@ -45,8 +45,6 @@ class Music(commands.Cog):
             except:
                 print('already connected')
 
-            if not queue:
-
                 if vc.is_playing():
                     await ctx.send(f'{ctx.message.author.mention}, music is already playing.')
 
@@ -60,31 +58,40 @@ class Music(commands.Cog):
                         vc.play(discord.FFmpegPCMAudio(executable="ffmpeg\\ffmpeg.exe", source = URL, **FFMPEG_OPTIONS))
                     else: 
                         vc.play(discord.FFmpegPCMAudio(source = URL, **FFMPEG_OPTIONS))
-            else:
-                if vc.is_playing():
-                    await ctx.send(f'{ctx.message.author.mention}, music is already playing.')
-
-                else:
-                    for url in queue:
-                        try:
-                            with YoutubeDL(YDL_OPTIONS) as ydl:
-                                info = ydl.extract_info(url, download=False)
-
-                            URL = info['formats'][0]['url']
-                            
-                            if os.name == "nt": 
-                                vc.play(discord.FFmpegPCMAudio(executable="ffmpeg\\ffmpeg.exe", source = URL, **FFMPEG_OPTIONS))
-                            else: 
-                                vc.play(discord.FFmpegPCMAudio(source = URL, **FFMPEG_OPTIONS))
-                        except:
-                            await ctx.send(f'something is wrong')
-                        else:
-                            await ctx.send(f'queue done!')
                         
-            while vc.is_playing():
-                await sleep(30)
-            if not vc.is_paused():
-                await vc.disconnect()
+                while vc.is_playing():
+                    await sleep(30)
+                if not vc.is_paused():
+                    await vc.disconnect()
+                    
+    @commands.command()
+    async def play_queue(self, ctx):
+        global queue
+        global vc
+        
+        try:
+            voice_channel = ctx.message.author.voice.channel
+            vc = await voice_channel.connect()
+        except:
+            if vc.is_playing():
+                await ctx.send(f'{ctx.message.author.mention}, music is already playing.')
+            else:
+                for url in queue:
+                    try:
+                        with YoutubeDL(YDL_OPTIONS) as ydl:
+                            info = ydl.extract_info(url, download=False)
+                        URL = info['formats'][0]['url']
+                        
+                        if os.name == "nt": 
+                            vc.play(discord.FFmpegPCMAudio(executable="ffmpeg\\ffmpeg.exe", source = URL, **FFMPEG_OPTIONS))
+                        else: 
+                            vc.play(discord.FFmpegPCMAudio(source = URL, **FFMPEG_OPTIONS))
+                    except:
+                        await ctx.send(f"something is wrong")
+        while vc.is_playing():
+            await sleep(30)
+        if not vc.is_paused():
+            await vc.disconnect()
 
     @commands.command()
     async def pause(self, ctx):

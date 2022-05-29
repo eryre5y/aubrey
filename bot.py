@@ -90,7 +90,8 @@ async def help(ctx):
         `music` \n
             **>join** - join voice channel
             **>leave** - leave voice channel
-            **>play <url>** - play music
+            **>play <url>** - play music without queue
+            **>play_queue** - play queued music
             **>pause** - pause music
             **>resume** - resume music
             **>stop** - stop music
