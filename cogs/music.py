@@ -34,7 +34,7 @@ class Music(commands.Cog):
         await ctx.voice_client.disconnect()
         
     @commands.command(pass_context=True)
-    async def yt(self, ctx, url):
+    async def play(self, ctx, url):
             global vc
 
             try:
@@ -56,6 +56,10 @@ class Music(commands.Cog):
                     vc.play(discord.FFmpegPCMAudio(executable="ffmpeg\\ffmpeg.exe", source = URL, **FFMPEG_OPTIONS))
                 else: 
                     vc.play(discord.FFmpegPCMAudio(source = URL, **FFMPEG_OPTIONS))
+                while vc.is_playing():
+                    await sleep(3)
+                if not vc.is_paused():
+                    await vc.disconnect()
 
     @commands.command()
     async def pause(self, ctx):
