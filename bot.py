@@ -90,11 +90,7 @@ async def help(ctx):
         `music` \n
             **>join** - join voice channel
             **>leave** - leave voice channel
-            **>play <url>** - play music
-            **>pause** - pause music
-            **>resume** - resume music
-            **>stop** - stop music
-            **>queue <url>** - add music to queue (>queue clear to clear queue)
+            **>yt** - play youtube video
         `other`
             **>ping** - api delay in ms \n 
             **>text** - ur message from bot \n 
