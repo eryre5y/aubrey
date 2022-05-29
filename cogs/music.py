@@ -7,6 +7,8 @@ import os
 YDL_OPTIONS = {'format': 'worstaudio/best', 'noplaylist': 'True', 'simulate': 'True', 'preferredquality': '192', 'preferredcodec': 'mp3', 'key': 'FFmpegExtractAudio'}
 FFMPEG_OPTIONS = {'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', 'options': '-vn'}
 
+queue = []
+
 class Music(commands.Cog):
     
     def __init__(self,client):
@@ -34,28 +36,55 @@ class Music(commands.Cog):
         await ctx.voice_client.disconnect()
         
     @commands.command(pass_context=True)
-    async def yt(self, ctx, url):
+    async def play(self, ctx, url):
+            global queue
             global vc
-
             try:
                 voice_channel = ctx.message.author.voice.channel
                 vc = await voice_channel.connect()
             except:
                 print('already connected')
 
-            if vc.is_playing():
-                await ctx.send(f'{ctx.message.author.mention}, music is already playing.')
+            if not queue:
 
+                if vc.is_playing():
+                    await ctx.send(f'{ctx.message.author.mention}, music is already playing.')
+
+                else:
+                    with YoutubeDL(YDL_OPTIONS) as ydl:
+                        info = ydl.extract_info(url, download=False)
+
+                    URL = info['formats'][0]['url']
+                    
+                    if os.name == "nt": 
+                        vc.play(discord.FFmpegPCMAudio(executable="ffmpeg\\ffmpeg.exe", source = URL, **FFMPEG_OPTIONS))
+                    else: 
+                        vc.play(discord.FFmpegPCMAudio(source = URL, **FFMPEG_OPTIONS))
             else:
-                with YoutubeDL(YDL_OPTIONS) as ydl:
-                    info = ydl.extract_info(url, download=False)
+                if vc.is_playing():
+                    await ctx.send(f'{ctx.message.author.mention}, music is already playing.')
 
-                URL = info['formats'][0]['url']
-                
-                if os.name == "nt": 
-                    vc.play(discord.FFmpegPCMAudio(executable="ffmpeg\\ffmpeg.exe", source = URL, **FFMPEG_OPTIONS))
-                else: 
-                    vc.play(discord.FFmpegPCMAudio(source = URL, **FFMPEG_OPTIONS))
+                else:
+                    for url in queue:
+                        try:
+                            with YoutubeDL(YDL_OPTIONS) as ydl:
+                                info = ydl.extract_info(url, download=False)
+
+                            URL = info['formats'][0]['url']
+                            
+                            if os.name == "nt": 
+                                vc.play(discord.FFmpegPCMAudio(executable="ffmpeg\\ffmpeg.exe", source = URL, **FFMPEG_OPTIONS))
+                            else: 
+                                vc.play(discord.FFmpegPCMAudio(source = URL, **FFMPEG_OPTIONS))
+                        except:
+                            await ctx.send(f'something is wrong')
+                        else:
+                            await ctx.send(f'queue done!')
+                        
+            while vc.is_playing():
+                await sleep(30)
+            if not vc.is_paused():
+                await vc.disconnect()
 
     @commands.command()
     async def pause(self, ctx):
@@ -80,6 +109,20 @@ class Music(commands.Cog):
             await ctx.send(f"stopped music")
         else:
             await ctx.send(f"music isn't playing rn")
+        
+    @commands.command()
+    async def queue(self, ctx, url):
+        global queue
+        
+        try:
+            queue.append(url)
+            await ctx.send(f"added to queue")
+        except:
+            await ctx.send(f"can't add to queue")
+
+        if url == "clear":
+            queue.clear()
+            await ctx.send(f"queue cleared!")
         
 
         
