@@ -1,0 +1,2 @@
+token='' # your bot token
+mainserver='' # your main server (for bot modules (cogs) management)

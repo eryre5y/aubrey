@@ -12,11 +12,10 @@ pip install -r requirements.txt
 ```
 
 # usage
-Go to [Discord developer portal](https://discord.com/developers/applications) and create a bot then paste bot token to `config.py`
-```
-token='' # your bot token
-mainserver='' # your main server (bot modules (cogs) management)
-```
+Go to [Discord developer portal](https://discord.com/developers/applications) and create a bot 
+
+then rename `config.py.example` to `config.py`
+
 to start bot execute
 ```
 ./start.sh
