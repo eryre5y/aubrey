@@ -44,7 +44,7 @@ class Music(commands.Cog):
                 print('already connected')
 
             if vc.is_playing():
-                await ctx.send(f'{ctx.message.author.mention}, music is already playing.')
+                await ctx.send(embed=discord.Embed(description=f'music is already playing.', color=discord.Color.purple()))
 
             else:
                 with YoutubeDL(YDL_OPTIONS) as ydl:
@@ -57,7 +57,7 @@ class Music(commands.Cog):
                 else: 
                     vc.play(discord.FFmpegPCMAudio(source = URL, **FFMPEG_OPTIONS))
                 while vc.is_playing():
-                    await sleep(3)
+                    await sleep(30)
                 if not vc.is_paused():
                     await vc.disconnect()
 
@@ -65,25 +65,25 @@ class Music(commands.Cog):
     async def pause(self, ctx):
         if vc.is_playing():
             vc.pause()
-            await ctx.send(f"paused music")
+            await ctx.send(embed=discord.Embed(description=f"paused music", color=discord.Color.purple()))
         else:
-            await ctx.send(f"nothing to pause")
+            await ctx.send(embed=discord.Embed(description=f"nothing to pause", color=discord.Color.purple()))
 
     @commands.command()
     async def resume(self, ctx):
         if vc.is_paused():
             vc.resume()
-            await ctx.send(f"resumed")
+            await ctx.send(embed=discord.Embed(description=f"resumed", color=discord.Color.purple()))
         else:
-            await ctx.send(f"nothing to resume")
+            await ctx.send(embed=discord.Embed(description=f"nothing to resume", color=discord.Color.purple()))
         
     @commands.command()
     async def stop(self, ctx):
         if vc.is_playing() or vc.is_paused():
             vc.stop()
-            await ctx.send(f"stopped music")
+            await ctx.send(embed=discord.Embed(description=f"stopped music", color=discord.Color.purple()))
         else:
-            await ctx.send(f"music isn't playing rn")
+            await ctx.send(embed=discord.Embed(description=f"music isn't playing rn", color=discord.Color.purple()))
         
 
         
