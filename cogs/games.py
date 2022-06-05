@@ -25,7 +25,7 @@ class Games(commands.Cog):
                     'ask urself.',
                     'ask ur mom.',
                     'i don\'t care.',
-                    'i don\'t know.'
+                    'i don\'t know.',
                     'who knows.',
                     'why do you ask me this?',
                     'i will beat you with a bat if you ask me this again.'
