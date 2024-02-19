@@ -88,7 +88,7 @@ class Games(commands.Cog):
             else:
                 cursor.execute(f"UPDATE users SET balance = balance - {bet} WHERE id = {ctx.author.id} AND guild_id={ctx.author.guild.id}")
                 db.commit()
-                await ctx.send(embed=discord.Embed(description="aw man u lose", color=discord.Color.purple()))
+                await ctx.send(embed=discord.Embed(description="aw man u lost", color=discord.Color.purple()))
                 
     @commands.command()
     @commands.guild_only()
